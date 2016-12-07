@@ -62,7 +62,7 @@ dh          dh.pem
 keepalive   10 120
 persist-key yes
 persist-tun yes
-comp-lzo    yes
+comp-lzo    no
 push        "dhcp-option DNS 8.8.8.8"
 push        "dhcp-option DNS 8.8.4.4"
 # Normally, the following command is sufficient.
@@ -77,7 +77,7 @@ user        nobody
 group       nogroup
 proto       udp
 port        80
-dev         tun80
+dev         tap80
 status      openvpn-status-80.log
 EOF
 
@@ -93,7 +93,7 @@ dh          dh.pem
 keepalive   10 120
 persist-key yes
 persist-tun yes
-comp-lzo    yes
+comp-lzo    no
 push        "dhcp-option DNS 8.8.8.8"
 push        "dhcp-option DNS 8.8.4.4"
 
@@ -110,19 +110,19 @@ push        "route 0.0.0.0 0.0.0.0"
 user        nobody
 group       nogroup
 
-proto       tcp
-port        443
-dev         tun443
-status      openvpn-status-443.log
+proto       udp
+port        80
+dev         tap80
+status      openvpn-status-80.log
 EOF
 
 >client.ovpn cat <<EOF
 client
 nobind
-dev tun
+dev tap
 redirect-gateway def1 bypass-dhcp
-remote $SERVER_IP 443 tcp
-comp-lzo yes
+remote $SERVER_IP 80 tap
+comp-lzo no
 
 <key>
 $(cat client-key.pem)
